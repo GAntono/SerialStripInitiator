@@ -3,6 +3,8 @@ ScriptName SerialStripper_MCM Extends SKI_ConfigBase
 
 Import StorageUtil
 
+SerialStrip Property SS Auto
+
 String Property SS_STRIPPER_STRIPKEYONOFF = "APPS.SerialStripper.StripKeyOnOff" AutoReadOnly Hidden
 String Property SS_STRIPPER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
 String Property SS_STRIPPER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
@@ -17,8 +19,8 @@ Event OnPageReset(String asPage)
 	SetCursorFillMode(TOP_TO_BOTTOM)
 	AddToggleOptionST("StripKeyOnOff", "Strip on keypress", GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF))
 	AddKeyMapOptionST("StripKey", "Key for stripping", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
-	AddSliderOptionST("HoldTimeForFullStrip", "Keypress duration for full stripping", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} seconds")
-	AddSliderOptionST("WaitingTimeAfterAnim", "Time between animating and stripping", GetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} seconds")
+	AddSliderOptionST("HoldTimeForFullStrip", "Keypress duration for full stripping", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
+	AddSliderOptionST("WaitingTimeAfterAnim", "Time between animating and stripping", GetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
 EndEvent
 
 State StripKeyOnOff
@@ -51,6 +53,9 @@ State StripKey
 				SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
 				SetKeymapOptionValueST(keyCode)
 			EndIf
+		Else
+			SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
+			SetKeymapOptionValueST(keyCode)
 		EndIf
 	EndEvent
 	
@@ -123,7 +128,7 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
 
 	If (KeyCode == GetIntValue(Self, SS_STRIPPER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-		RegisterForModEvent("SerialStripStart", "OnSerialStripStart")
+		SS.RegisterForModEvent("SerialStripStart", "OnSerialStripStart")
 
 		If (HoldTime < GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
 			SendSerialStripStartEvent(Self, False)
