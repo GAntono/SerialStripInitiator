@@ -34,7 +34,7 @@ State StripKeyOnOff
 		SerialStripOn(Status)
 		SetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF, Status)
 	EndEvent
-	
+
 	Event OnHighlightST()
 		SetInfoText("ON: will strip when button is pressed\nOFF: button inactive")
 	EndEvent
@@ -50,15 +50,21 @@ State StripKey
 					Msg = "This key is already mapped to:\n" + conflictControl + ")\n\nAre you sure you want to continue?"
 				EndIf
 			If (ShowMessage(Msg, True, "Yes", "No"))
+				UnregisterForAllKeys()
 				SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
 				SetKeymapOptionValueST(keyCode)
 			EndIf
 		Else
+			UnregisterForAllKeys()
 			SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
 			SetKeymapOptionValueST(keyCode)
 		EndIf
+
+		If(GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF) == 1)
+			SerialStripOn(1)
+		EndIf
 	EndEvent
-	
+
 	Event OnHighlightST()
 		SetInfoText("Select the button for stripping")
 	EndEvent
@@ -71,7 +77,7 @@ State HoldTimeForFullStrip
 		SetSliderDialogRange(0.0, 5.0)
 		SetSliderDialogInterval(0.1)
 	EndEvent
-	
+
 	Event OnSliderAcceptST(float afSelectedValue)
 		Float HoldTimeForFullStrip
 		If (0.0 < afSelectedValue && afSelectedValue < 0.5)	;waiting times < 0.5 seconds are prone to errors (Heromaster)
@@ -79,11 +85,11 @@ State HoldTimeForFullStrip
 		Else
 			HoldTimeForFullStrip = afSelectedValue
 		EndIf
-		
+
 		SetSliderOptionValueST(HoldTimeForFullStrip, "{1} sec")
 		SetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP, HoldTimeForFullStrip)
 	EndEvent
-	
+
 	Event OnHighlightST()
 		SetInfoText("Select how long the key should be held to start a full serial strip.\nSimple taps will trigger a single serial strip.")
 	EndEvent
@@ -96,7 +102,7 @@ State WaitingTimeAfterAnim
 		SetSliderDialogRange(0.0, 5.0)
 		SetSliderDialogInterval(0.1)
 	EndEvent
-	
+
 	Event OnSliderAcceptST(float afSelectedValue)
 		Float WaitingTimeAfterAnim
 		If (0.0 < afSelectedValue && afSelectedValue < 0.5)	;waiting times < 0.5 seconds are prone to errors (Heromaster)
@@ -104,11 +110,11 @@ State WaitingTimeAfterAnim
 		Else
 			WaitingTimeAfterAnim = afSelectedValue
 		EndIf
-		
+
 		SetSliderOptionValueST(WaitingTimeAfterAnim, "{1} sec")
 		SetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM, WaitingTimeAfterAnim)
 	EndEvent
-	
+
 	Event OnHighlightST()
 		SetInfoText("After a stripping animation ends, how long to wait until the items are stripped\nAdjust according to your system's framerate to achieve best results.")
 	EndEvent
@@ -129,7 +135,7 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 
 	If (KeyCode == GetIntValue(Self, SS_STRIPPER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
 		SS.RegisterForModEvent("SerialStripStart", "OnSerialStripStart")
-
+		
 		If (HoldTime < GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
 			SendSerialStripStartEvent(Self, False)
 		Else
