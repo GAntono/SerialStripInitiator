@@ -12,7 +12,7 @@ String Property SS_STRIPPER_WAITTIMEAFTERANIM = "APPS.SerialStripper.WaitingTime
 
 Event OnConfigInit()
 	SetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP, 2.0)
-	SetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM, 1.0)
+	SetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
 EndEvent
 
 Event OnPageReset(String asPage)
@@ -20,7 +20,7 @@ Event OnPageReset(String asPage)
 	AddToggleOptionST("StripKeyOnOff", "Strip on keypress", GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF))
 	AddKeyMapOptionST("StripKey", "Key for stripping", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
 	AddSliderOptionST("HoldTimeForFullStrip", "Keypress duration for full stripping", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
-	AddSliderOptionST("WaitingTimeAfterAnim", "Time between animating and stripping", GetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
+	AddSliderOptionST("WaitingTimeAfterAnim", "Time between animating and stripping", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
 EndEvent
 
 State StripKeyOnOff
@@ -97,7 +97,7 @@ EndState
 
 State WaitingTimeAfterAnim
 	Event OnSliderOpenST()
-		SetSliderDialogStartValue(GetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM))
+		SetSliderDialogStartValue(GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM))
 		SetSliderDialogDefaultValue(1.0)
 		SetSliderDialogRange(0.0, 5.0)
 		SetSliderDialogInterval(0.1)
@@ -105,6 +105,7 @@ State WaitingTimeAfterAnim
 
 	Event OnSliderAcceptST(float afSelectedValue)
 		Float WaitingTimeAfterAnim
+		
 		If (0.0 < afSelectedValue && afSelectedValue < 0.5)	;waiting times < 0.5 seconds are prone to errors (Heromaster)
 			WaitingTimeAfterAnim = 0.5
 		Else
@@ -112,7 +113,7 @@ State WaitingTimeAfterAnim
 		EndIf
 
 		SetSliderOptionValueST(WaitingTimeAfterAnim, "{1} sec")
-		SetFloatValue(Self, SS_STRIPPER_WAITTIMEAFTERANIM, WaitingTimeAfterAnim)
+		SetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM, WaitingTimeAfterAnim)
 	EndEvent
 
 	Event OnHighlightST()
