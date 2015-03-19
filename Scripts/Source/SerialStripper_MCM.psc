@@ -31,7 +31,7 @@ State StripKeyOnOff
 		EndIf
 
 		SetToggleOptionValueST(Status)
-		SerialStripOn(Status)
+		SerialStripperOn(Status)
 		SetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF, Status)
 	EndEvent
 
@@ -61,7 +61,7 @@ State StripKey
 		EndIf
 
 		If(GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF) == 1)
-			SerialStripOn(1)
+			SerialStripperOn(1)
 		EndIf
 	EndEvent
 
@@ -105,7 +105,7 @@ State WaitingTimeAfterAnim
 
 	Event OnSliderAcceptST(float afSelectedValue)
 		Float WaitingTimeAfterAnim
-		
+
 		If (0.0 < afSelectedValue && afSelectedValue < 0.5)	;waiting times < 0.5 seconds are prone to errors (Heromaster)
 			WaitingTimeAfterAnim = 0.5
 		Else
@@ -121,10 +121,10 @@ State WaitingTimeAfterAnim
 	EndEvent
 EndState
 
-Function SerialStripOn(Int abActivateSerialStrip)
+Function SerialStripperOn(Int abActivateSerialStripper)
 ;turns on serial stripping. Pass 1 to run on, 0 to turn off.
 
-	If (abActivateSerialStrip == 1) ;if serial stripping is set to activate
+	If (abActivateSerialStripper == 1) ;if serial stripping is set to activate
 		RegisterForKey(GetIntValue(Self, SS_STRIPPER_STRIPKEY)) ;registers to listen for the strip key
 	Else ;if serial stripping is set to deactivate
 		UnRegisterForKey(GetIntValue(Self, SS_STRIPPER_STRIPKEY)) ;stops listening for the strip key
@@ -135,8 +135,8 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
 
 	If (KeyCode == GetIntValue(Self, SS_STRIPPER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-		SS.RegisterForModEvent("SerialStripStart", "OnSerialStripStart")
-		
+
+
 		If (HoldTime < GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
 			SendSerialStripStartEvent(Self, False)
 		Else
