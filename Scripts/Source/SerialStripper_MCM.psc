@@ -36,7 +36,7 @@ State StripKeyOnOff
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("ON: will strip when button is pressed\nOFF: button inactive")
+		SetInfoText("ON: will strip when key is pressed\nOFF: key inactive")
 	EndEvent
 EndState
 
@@ -47,7 +47,7 @@ State StripKey
 				If (conflictName)
 					Msg = "This key is already mapped to:\n" + conflictControl + "\n(" + conflictName + ")\n\nAre you sure you want to continue?"
 				Else
-					Msg = "This key is already mapped to:\n" + conflictControl + ")\n\nAre you sure you want to continue?"
+					Msg = "This key is already mapped to:\n" + conflictControl + "\n\nAre you sure you want to continue?"
 				EndIf
 			If (ShowMessage(Msg, True, "Yes", "No"))
 				UnregisterForAllKeys()
@@ -66,7 +66,7 @@ State StripKey
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("Select the button for stripping")
+		SetInfoText("Select the key for stripping")
 	EndEvent
 EndState
 
@@ -117,7 +117,7 @@ State WaitingTimeAfterAnim
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("After a stripping animation ends, how long to wait until the items are stripped\nAdjust according to your system's framerate to achieve best results.")
+		SetInfoText("After a stripping animation ends, this defines how long to wait until the items are stripped\nAdjust according to your system's speed to achieve best results.")
 	EndEvent
 EndState
 
