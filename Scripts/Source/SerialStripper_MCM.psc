@@ -17,10 +17,10 @@ EndEvent
 
 Event OnPageReset(String asPage)
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddToggleOptionST("StripKeyOnOff", "Strip on keypress", GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF))
-	AddKeyMapOptionST("StripKey", "Key for stripping", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
-	AddSliderOptionST("HoldTimeForFullStrip", "Keypress duration for full stripping", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
-	AddSliderOptionST("WaitingTimeAfterAnim", "Time between animating and stripping", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
+	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF))
+	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
+	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
+	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
 EndEvent
 
 State StripKeyOnOff
@@ -36,7 +36,7 @@ State StripKeyOnOff
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("ON: will strip when key is pressed\nOFF: key inactive")
+		SetInfoText("$EXPLAIN_StripKeyOnOff")
 	EndEvent
 EndState
 
@@ -66,7 +66,7 @@ State StripKey
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("Select the key for stripping")
+		SetInfoText("$EXPLAIN_StripKey")
 	EndEvent
 EndState
 
@@ -91,7 +91,7 @@ State HoldTimeForFullStrip
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("Select how long the key should be held to start a full serial strip.\nSimple taps will trigger a single serial strip.")
+		SetInfoText("$EXPLAIN_HoldTimeForFullStrip")
 	EndEvent
 EndState
 
@@ -117,7 +117,7 @@ State WaitingTimeAfterAnim
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("After a stripping animation ends, this defines how long to wait until the items are stripped\nAdjust according to your system's speed to achieve best results.")
+		SetInfoText("$EXPLAIN_WaitingTimeAfterAnim")
 	EndEvent
 EndState
 
