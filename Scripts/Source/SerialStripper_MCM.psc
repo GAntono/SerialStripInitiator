@@ -45,11 +45,11 @@ State StripKey
 		If (conflictControl)
 			String Msg
 				If (conflictName)
-					Msg = "This key is already mapped to:\n" + conflictControl + "\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+					Msg = "$KEY_CONFLICT_WITH_MOD{" + conflictControl + "}{" + conflictName + "}"
 				Else
-					Msg = "This key is already mapped to:\n" + conflictControl + "\n\nAre you sure you want to continue?"
+					Msg = "$KEY_CONFLICT_WITH_VANILLA{" + conflictControl + "}"
 				EndIf
-			If (ShowMessage(Msg, True, "Yes", "No"))
+			If (ShowMessage(Msg, True, "$YES", "$NO"))
 				UnregisterForAllKeys()
 				SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
 				SetKeymapOptionValueST(keyCode)
