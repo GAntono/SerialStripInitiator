@@ -3,7 +3,7 @@ ScriptName SerialStripper_MCM Extends SKI_ConfigBase
 
 Import StorageUtil
 
-String Property SSER_VERSION = "v1.0-beta" AutoReadOnly Hidden
+String Property SSer_Version = "v1.0-beta" AutoReadOnly Hidden
 
 SerialStrip Property SS Auto
 
@@ -13,7 +13,7 @@ String Property SS_STRIPPER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTime
 String Property SS_STRIPPER_WAITTIMEAFTERANIM = "APPS.SerialStripper.WaitingTimeAfterAnim" AutoReadOnly Hidden
 
 Function ShowVersion()
-	Debug.Trace("[SerialStriper] " + SSER_VERSION)
+	Debug.Trace("[SerialStriper] " + SSer_Version)
 EndFunction
 
 Event OnConfigInit()
