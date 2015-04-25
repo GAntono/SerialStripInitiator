@@ -27,6 +27,9 @@ Event OnPageReset(String asPage)
 	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
 	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
 	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
+	AddEmptyOption()
+	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False)
+	AddToggleOptionST("UninstallSS", "$UNINSTALL_SS", False)
 EndEvent
 
 State StripKeyOnOff
@@ -124,6 +127,45 @@ State WaitingTimeAfterAnim
 
 	Event OnHighlightST()
 		SetInfoText("$EXPLAIN_WaitingTimeAfterAnim")
+	EndEvent
+EndState
+
+State UninstallSS
+	Event OnSelectST()
+		If (ShowMessage("$CONFIRM_UNINSTALL_SS"))
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
+			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
+			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			SS.Uninstall()
+			SetToggleOptionValueST(True)
+			SetOptionFlagsST(OPTION_FLAG_DISABLED)
+			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKeyOnOff")
+			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKey")
+			SetOptionFlagsST(OPTION_FLAG_DISABLED, "HoldTimeForFullStrip")
+			SetOptionFlagsST(OPTION_FLAG_DISABLED, "WaitingTimeAfterAnim")
+		EndIf
+	EndEvent
+
+	Event OnHighlightST()
+		SetInfoText("$EXPLAIN_UNINSTALL_SS")
+	EndEvent
+EndState
+
+State UninstallSSer
+	Event OnSelectST()
+		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
+			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
+			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			SetToggleOptionValueST(True)
+			SetOptionFlagsST(OPTION_FLAG_DISABLED)
+		EndIf
+	EndEvent
+
+	Event OnHighlightST()
+		SetInfoText("$EXPLAIN_UNINSTALL_SSER")
 	EndEvent
 EndState
 
