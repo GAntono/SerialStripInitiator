@@ -12,12 +12,15 @@ String Property SSER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidd
 String Property SSER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
 String Property SS_WAITTIMEAFTERANIM = "APPS.SerialStrip.WaitingTimeAfterAnim" AutoReadOnly Hidden
 
+Int Property GeneralOptionFlags = 0x00 Auto Hidden ;OPTION_FLAG_NONE from SKI_ConfigBase
+Int Property StripKeyOptionFlag = 0x04 Auto Hidden ;OPTION_FLAG_WITH_UNMAP from SKI_ConfigBase
+
 Function ShowVersion()
 	Debug.Trace("[SerialStripper] " + SSer_Version)
 EndFunction
 
 Event OnConfigInit()
-	If (!HasFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP) && !HasFloatValue(None, SS_WAITTIMEAFTERANIM)) ;if OnConfigInit() has not been called before
+	If (!HasFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if OnConfigInit() has not been called before.
 		ShowVersion()
 		SetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP, 2.0)
 		SetFloatValue(None, SS_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
@@ -26,13 +29,16 @@ EndEvent
 
 Event OnPageReset(String asPage)
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SSER_STRIPKEYONOFF))
-	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SSER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
-	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP), "{1} sec")
-	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_WAITTIMEAFTERANIM), "{1} sec")
+	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SSER_STRIPKEYONOFF), GeneralOptionFlags)
+	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SSER_STRIPKEY), StripKeyOptionFlag)
+	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP), "{1} sec", GeneralOptionFlags)
+	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_WAITTIMEAFTERANIM), "{1} sec", GeneralOptionFlags)
 	AddEmptyOption()
-	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False)
-	AddToggleOptionST("UninstallSSerSS", "$UNINSTALL_SSER_SS", False)
+	AddEmptyOption()
+	AddEmptyOption()
+	AddEmptyOption()
+	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False, GeneralOptionFlags)
+	AddToggleOptionST("UninstallSSerSS", "$UNINSTALL_SSER_SS", False, GeneralOptionFlags)
 EndEvent
 
 State StripKeyOnOff
@@ -136,6 +142,9 @@ EndState
 State UninstallSSer
 	Event OnSelectST()
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
+			GeneralOptionFlags = OPTION_FLAG_DISABLED
+			StripKeyOptionFlag = OPTION_FLAG_DISABLED
+			ForcePageReset()
 			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
 			UnSetIntValue(Self, SSER_STRIPKEYONOFF)
@@ -143,9 +152,6 @@ State UninstallSSer
 			UnSetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)
 			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
-			SetToggleOptionValueST(True)
-			SetOptionFlagsST(OPTION_FLAG_DISABLED)
-			ForcePageReset()
 			ShowMessage("$SSER_UNINSTALLED")
 		EndIf
 	EndEvent
@@ -158,6 +164,9 @@ EndState
 State UninstallSSerSS
 	Event OnSelectST()
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER_SS"))
+			GeneralOptionFlags = OPTION_FLAG_DISABLED
+			StripKeyOptionFlag = OPTION_FLAG_DISABLED
+			ForcePageReset()
 			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
 			UnSetIntValue(Self, SSER_STRIPKEYONOFF)
@@ -166,13 +175,6 @@ State UninstallSSerSS
 			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
 			SS.Uninstall()
-			SetToggleOptionValueST(True)
-			SetOptionFlagsST(OPTION_FLAG_DISABLED)
-			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKeyOnOff")
-			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKey")
-			SetOptionFlagsST(OPTION_FLAG_DISABLED, "HoldTimeForFullStrip")
-			SetOptionFlagsST(OPTION_FLAG_DISABLED, "WaitingTimeAfterAnim")
-			ForcePageReset()
 			ShowMessage("$SSER_SS_UNINSTALLED")
 		EndIf
 	EndEvent
