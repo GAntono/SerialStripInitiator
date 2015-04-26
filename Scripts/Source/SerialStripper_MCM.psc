@@ -17,6 +17,7 @@ Function ShowVersion()
 EndFunction
 
 Event OnConfigInit()
+	ShowVersion()
 	SetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP, 2.0)
 	SetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
 EndEvent
@@ -133,13 +134,16 @@ EndState
 State UninstallSSer
 	Event OnSelectST()
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
+			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
 			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
 			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			Debug.Trace("SerialStripper uninstalled")
 			SetToggleOptionValueST(True)
 			SetOptionFlagsST(OPTION_FLAG_DISABLED)
+			ForcePageReset()
 			ShowMessage("$SSER_UNINSTALLED")
 		EndIf
 	EndEvent
@@ -152,11 +156,13 @@ EndState
 State UninstallSSerSS
 	Event OnSelectST()
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER_SS"))
+			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
 			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
 			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			Debug.Trace("SerialStripper uninstalled")
 			SS.Uninstall()
 			SetToggleOptionValueST(True)
 			SetOptionFlagsST(OPTION_FLAG_DISABLED)
@@ -164,6 +170,7 @@ State UninstallSSerSS
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKey")
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "HoldTimeForFullStrip")
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "WaitingTimeAfterAnim")
+			ForcePageReset()
 			ShowMessage("$SSER_SS_UNINSTALLED")
 		EndIf
 	EndEvent
