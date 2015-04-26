@@ -5,7 +5,7 @@ Import StorageUtil
 
 String Property SSer_Version = "v1.0-beta" AutoReadOnly Hidden
 
-SerialStrip Property SS Auto
+SerialStripFunctions Property SS Auto
 
 String Property SS_STRIPPER_STRIPKEYONOFF = "APPS.SerialStripper.StripKeyOnOff" AutoReadOnly Hidden
 String Property SS_STRIPPER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
@@ -13,7 +13,7 @@ String Property SS_STRIPPER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTime
 String Property SS_STRIPPER_WAITTIMEAFTERANIM = "APPS.SerialStripper.WaitingTimeAfterAnim" AutoReadOnly Hidden
 
 Function ShowVersion()
-	Debug.Trace("[SerialStriper] " + SSer_Version)
+	Debug.Trace("[SerialStripper] " + SSer_Version)
 EndFunction
 
 Event OnConfigInit()
@@ -29,7 +29,7 @@ Event OnPageReset(String asPage)
 	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
 	AddEmptyOption()
 	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False)
-	AddToggleOptionST("UninstallSS", "$UNINSTALL_SS", False)
+	AddToggleOptionST("UninstallSSerSS", "$UNINSTALL_SSER_SS", False)
 EndEvent
 
 State StripKeyOnOff
@@ -130,9 +130,29 @@ State WaitingTimeAfterAnim
 	EndEvent
 EndState
 
-State UninstallSS
+State UninstallSSer
 	Event OnSelectST()
-		If (ShowMessage("$CONFIRM_UNINSTALL_SS"))
+		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
+			UnregisterForAllKeys()
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
+			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
+			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
+			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			SetToggleOptionValueST(True)
+			SetOptionFlagsST(OPTION_FLAG_DISABLED)
+			ShowMessage("$SSER_UNINSTALLED")
+		EndIf
+	EndEvent
+
+	Event OnHighlightST()
+		SetInfoText("$EXPLAIN_UNINSTALL_SSER")
+	EndEvent
+EndState
+
+State UninstallSSerSS
+	Event OnSelectST()
+		If (ShowMessage("$CONFIRM_UNINSTALL_SSER_SS"))
+			UnregisterForAllKeys()
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
 			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
 			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
@@ -144,28 +164,12 @@ State UninstallSS
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "StripKey")
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "HoldTimeForFullStrip")
 			SetOptionFlagsST(OPTION_FLAG_DISABLED, "WaitingTimeAfterAnim")
+			ShowMessage("$SSER_SS_UNINSTALLED")
 		EndIf
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_UNINSTALL_SS")
-	EndEvent
-EndState
-
-State UninstallSSer
-	Event OnSelectST()
-		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
-			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
-			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
-			SetToggleOptionValueST(True)
-			SetOptionFlagsST(OPTION_FLAG_DISABLED)
-		EndIf
-	EndEvent
-
-	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_UNINSTALL_SSER")
+		SetInfoText("$EXPLAIN_UNINSTALL_SSER_SS")
 	EndEvent
 EndState
 
