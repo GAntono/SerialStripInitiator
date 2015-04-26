@@ -7,27 +7,29 @@ String Property SSer_Version = "v1.0-beta" AutoReadOnly Hidden
 
 SerialStripFunctions Property SS Auto
 
-String Property SS_STRIPPER_STRIPKEYONOFF = "APPS.SerialStripper.StripKeyOnOff" AutoReadOnly Hidden
-String Property SS_STRIPPER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
-String Property SS_STRIPPER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
-String Property SS_STRIPPER_WAITTIMEAFTERANIM = "APPS.SerialStripper.WaitingTimeAfterAnim" AutoReadOnly Hidden
+String Property SSER_STRIPKEYONOFF = "APPS.SerialStripper.StripKeyOnOff" AutoReadOnly Hidden
+String Property SSER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
+String Property SSER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
+String Property SS_WAITTIMEAFTERANIM = "APPS.SerialStrip.WaitingTimeAfterAnim" AutoReadOnly Hidden
 
 Function ShowVersion()
 	Debug.Trace("[SerialStripper] " + SSer_Version)
 EndFunction
 
 Event OnConfigInit()
-	ShowVersion()
-	SetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP, 2.0)
-	SetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
+	If (!HasFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP) && !HasFloatValue(None, SS_WAITTIMEAFTERANIM)) ;if OnConfigInit() has not been called before
+		ShowVersion()
+		SetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP, 2.0)
+		SetFloatValue(None, SS_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
+	EndIf
 EndEvent
 
 Event OnPageReset(String asPage)
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF))
-	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SS_STRIPPER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
-	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP), "{1} sec")
-	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM), "{1} sec")
+	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SSER_STRIPKEYONOFF))
+	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SSER_STRIPKEY), OPTION_FLAG_WITH_UNMAP)
+	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP), "{1} sec")
+	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_WAITTIMEAFTERANIM), "{1} sec")
 	AddEmptyOption()
 	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False)
 	AddToggleOptionST("UninstallSSerSS", "$UNINSTALL_SSER_SS", False)
@@ -36,13 +38,13 @@ EndEvent
 State StripKeyOnOff
 	Event OnSelectST()
 		Int Status
-		If (GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)) == 0
+		If (GetIntValue(Self, SSER_STRIPKEYONOFF)) == 0
 			Status = 1
 		EndIf
 
 		SetToggleOptionValueST(Status)
 		SerialStripperOn(Status)
-		SetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF, Status)
+		SetIntValue(Self, SSER_STRIPKEYONOFF, Status)
 	EndEvent
 
 	Event OnHighlightST()
@@ -61,16 +63,16 @@ State StripKey
 				EndIf
 			If (ShowMessage(Msg, True, "$YES", "$NO"))
 				UnregisterForAllKeys()
-				SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
+				SetIntValue(Self, SSER_STRIPKEY, keyCode)
 				SetKeymapOptionValueST(keyCode)
 			EndIf
 		Else
 			UnregisterForAllKeys()
-			SetIntValue(Self, SS_STRIPPER_STRIPKEY, keyCode)
+			SetIntValue(Self, SSER_STRIPKEY, keyCode)
 			SetKeymapOptionValueST(keyCode)
 		EndIf
 
-		If(GetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF) == 1)
+		If(GetIntValue(Self, SSER_STRIPKEYONOFF) == 1)
 			SerialStripperOn(1)
 		EndIf
 	EndEvent
@@ -82,7 +84,7 @@ EndState
 
 State HoldTimeForFullStrip
 	Event OnSliderOpenST()
-		SetSliderDialogStartValue(GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP))
+		SetSliderDialogStartValue(GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP))
 		SetSliderDialogDefaultValue(2.0)
 		SetSliderDialogRange(0.0, 5.0)
 		SetSliderDialogInterval(0.1)
@@ -97,7 +99,7 @@ State HoldTimeForFullStrip
 		EndIf
 
 		SetSliderOptionValueST(HoldTimeForFullStrip, "{1} sec")
-		SetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP, HoldTimeForFullStrip)
+		SetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP, HoldTimeForFullStrip)
 	EndEvent
 
 	Event OnHighlightST()
@@ -107,7 +109,7 @@ EndState
 
 State WaitingTimeAfterAnim
 	Event OnSliderOpenST()
-		SetSliderDialogStartValue(GetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM))
+		SetSliderDialogStartValue(GetFloatValue(None, SS_WAITTIMEAFTERANIM))
 		SetSliderDialogDefaultValue(1.0)
 		SetSliderDialogRange(0.0, 5.0)
 		SetSliderDialogInterval(0.1)
@@ -123,7 +125,7 @@ State WaitingTimeAfterAnim
 		EndIf
 
 		SetSliderOptionValueST(WaitingTimeAfterAnim, "{1} sec")
-		SetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM, WaitingTimeAfterAnim)
+		SetFloatValue(None, SS_WAITTIMEAFTERANIM, WaitingTimeAfterAnim)
 	EndEvent
 
 	Event OnHighlightST()
@@ -136,10 +138,10 @@ State UninstallSSer
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
 			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
-			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
-			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			UnSetIntValue(Self, SSER_STRIPKEYONOFF)
+			UnSetIntValue(Self, SSER_STRIPKEY)
+			UnSetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)
+			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
 			SetToggleOptionValueST(True)
 			SetOptionFlagsST(OPTION_FLAG_DISABLED)
@@ -158,10 +160,10 @@ State UninstallSSerSS
 		If (ShowMessage("$CONFIRM_UNINSTALL_SSER_SS"))
 			Debug.Trace("SerialStripper uninstalling")
 			UnregisterForAllKeys()
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEYONOFF)
-			UnSetIntValue(Self, SS_STRIPPER_STRIPKEY)
-			UnSetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)
-			UnSetFloatValue(None, SS_STRIPPER_WAITTIMEAFTERANIM)
+			UnSetIntValue(Self, SSER_STRIPKEYONOFF)
+			UnSetIntValue(Self, SSER_STRIPKEY)
+			UnSetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)
+			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
 			SS.Uninstall()
 			SetToggleOptionValueST(True)
@@ -184,19 +186,19 @@ Function SerialStripperOn(Int abActivateSerialStripper)
 ;turns on serial stripping. Pass 1 to run on, 0 to turn off.
 
 	If (abActivateSerialStripper == 1) ;if serial stripping is set to activate
-		RegisterForKey(GetIntValue(Self, SS_STRIPPER_STRIPKEY)) ;registers to listen for the strip key
+		RegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;registers to listen for the strip key
 	Else ;if serial stripping is set to deactivate
-		UnRegisterForKey(GetIntValue(Self, SS_STRIPPER_STRIPKEY)) ;stops listening for the strip key
+		UnRegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;stops listening for the strip key
 	EndIf
 EndFunction
 
 Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
 
-	If (KeyCode == GetIntValue(Self, SS_STRIPPER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
+	If (KeyCode == GetIntValue(Self, SSER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
 
 
-		If (HoldTime < GetFloatValue(Self, SS_STRIPPER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
+		If (HoldTime < GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
 			SendSerialStripStartEvent(Self, False)
 		Else
 			SendSerialStripStartEvent(Self, True)
