@@ -20,10 +20,12 @@ Function ShowVersion()
 EndFunction
 
 Event OnConfigInit()
-	If (!HasFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if OnConfigInit() has not been called before.
+	AdjustIntValue(Self, "OnInitCounter", 1)
+	If (GetIntValue(Self, "OnInitCounter") == 2)
 		ShowVersion()
 		SetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP, 2.0)
 		SetFloatValue(None, SS_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
+		UnSetIntValue(Self, "OnInitCounter")
 	EndIf
 EndEvent
 
@@ -196,10 +198,7 @@ EndFunction
 
 Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
-
 	If (KeyCode == GetIntValue(Self, SSER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-
-
 		If (HoldTime < GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
 			SendSerialStripStartEvent(Self, False)
 		Else
