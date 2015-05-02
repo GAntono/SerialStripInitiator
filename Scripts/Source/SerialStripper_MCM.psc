@@ -31,16 +31,16 @@ EndEvent
 
 Event OnPageReset(String asPage)
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddToggleOptionST("StripKeyOnOff", "$STRIP_ON_KEYPRESS", GetIntValue(Self, SSER_STRIPKEYONOFF), GeneralOptionFlags)
-	AddKeyMapOptionST("StripKey", "$KEY_FOR_STRIPPING", GetIntValue(Self, SSER_STRIPKEY), StripKeyOptionFlag)
-	AddSliderOptionST("HoldTimeForFullStrip", "$KEYPRESS_DURATION_FOR_FULL_STRIP", GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP), "{1} sec", GeneralOptionFlags)
-	AddSliderOptionST("WaitingTimeAfterAnim", "$TIME_BETWEEN_ANIM_&_STRIP", GetFloatValue(None, SS_WAITTIMEAFTERANIM), "{1} sec", GeneralOptionFlags)
+	AddToggleOptionST("StripKeyOnOff", "$SSER_STRIPONKEYPRESS", GetIntValue(Self, SSER_STRIPKEYONOFF), GeneralOptionFlags)
+	AddKeyMapOptionST("StripKey", "$SSER_KEYFORSTRIPPING", GetIntValue(Self, SSER_STRIPKEY), StripKeyOptionFlag)
+	AddSliderOptionST("HoldTimeForFullStrip", "$SSER_KEYPRESSDURATIONFORFULLSTRIP", GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP), "{1} sec", GeneralOptionFlags)
+	AddSliderOptionST("WaitingTimeAfterAnim", "$SSER_TIMEBETWEENANIMANDSTRIP", GetFloatValue(None, SS_WAITTIMEAFTERANIM), "{1} sec", GeneralOptionFlags)
 	AddEmptyOption()
 	AddEmptyOption()
 	AddEmptyOption()
 	AddEmptyOption()
-	AddToggleOptionST("UninstallSSer", "$UNINSTALL_SSER", False, GeneralOptionFlags)
-	AddToggleOptionST("UninstallSSerSS", "$UNINSTALL_SSER_SS", False, GeneralOptionFlags)
+	AddToggleOptionST("UninstallSSer", "$SSER_UNINSTALLSSTRIPPER", False, GeneralOptionFlags)
+	AddToggleOptionST("UninstallSSerSS", "$SSER_UNINSTALLSSTRIPPERANDSSTRIP", False, GeneralOptionFlags)
 EndEvent
 
 State StripKeyOnOff
@@ -56,7 +56,7 @@ State StripKeyOnOff
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_StripKeyOnOff")
+		SetInfoText("$SSER_STRIPONKEYPRESS_DESC")
 	EndEvent
 EndState
 
@@ -65,9 +65,9 @@ State StripKey
 		If (conflictControl)
 			String Msg
 				If (conflictName)
-					Msg = "$KEY_CONFLICT_WITH_MOD{" + conflictControl + "}{" + conflictName + "}"
+					Msg = "$SSER_KEYCONFLICTWITHMOD{" + conflictControl + "}{" + conflictName + "}"
 				Else
-					Msg = "$KEY_CONFLICT_WITH_VANILLA{" + conflictControl + "}"
+					Msg = "$SSER_KEYCONFLICTWITHVANILLA{" + conflictControl + "}"
 				EndIf
 			If (ShowMessage(Msg, True, "$YES", "$NO"))
 				UnregisterForAllKeys()
@@ -86,7 +86,7 @@ State StripKey
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_StripKey")
+		SetInfoText("$SSER_KEYFORSTRIPPING_DESC")
 	EndEvent
 EndState
 
@@ -111,7 +111,7 @@ State HoldTimeForFullStrip
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_HoldTimeForFullStrip")
+		SetInfoText("$SSER_KEYPRESSDURATIONFORFULLSTRIP_DESC")
 	EndEvent
 EndState
 
@@ -137,13 +137,13 @@ State WaitingTimeAfterAnim
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_WaitingTimeAfterAnim")
+		SetInfoText("$SSER_TIMEBETWEENANIMANDSTRIP_DESC")
 	EndEvent
 EndState
 
 State UninstallSSer
 	Event OnSelectST()
-		If (ShowMessage("$CONFIRM_UNINSTALL_SSER"))
+		If (ShowMessage("$SSER_UNINSTALLSSTRIPPERCONFIRM_MSG"))
 			GeneralOptionFlags = OPTION_FLAG_DISABLED
 			StripKeyOptionFlag = OPTION_FLAG_DISABLED
 			ForcePageReset()
@@ -154,18 +154,18 @@ State UninstallSSer
 			UnSetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)
 			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
-			ShowMessage("$SSER_UNINSTALLED")
+			ShowMessage("$SSER_UNINSTALLSSTRIPPERDONE_MSG")
 		EndIf
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_UNINSTALL_SSER")
+		SetInfoText("$SSER_UNINSTALLSSTRIPPER_DESC")
 	EndEvent
 EndState
 
 State UninstallSSerSS
 	Event OnSelectST()
-		If (ShowMessage("$CONFIRM_UNINSTALL_SSER_SS"))
+		If (ShowMessage("$SSER_UNINSTALLSSTRIPPERANDSSTRIPCONFIRM_MSG"))
 			GeneralOptionFlags = OPTION_FLAG_DISABLED
 			StripKeyOptionFlag = OPTION_FLAG_DISABLED
 			ForcePageReset()
@@ -177,12 +177,12 @@ State UninstallSSerSS
 			UnSetFloatValue(None, SS_WAITTIMEAFTERANIM)
 			Debug.Trace("SerialStripper uninstalled")
 			SS.Uninstall()
-			ShowMessage("$SSER_SS_UNINSTALLED")
+			ShowMessage("$SSER_UNINSTALLSSTRIPPERANDSSTRIPDONE_MSG")
 		EndIf
 	EndEvent
 
 	Event OnHighlightST()
-		SetInfoText("$EXPLAIN_UNINSTALL_SSER_SS")
+		SetInfoText("$SSER_UNINSTALLSSTRIPPERANDSSTRIP_DESC")
 	EndEvent
 EndState
 
