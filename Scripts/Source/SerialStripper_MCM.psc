@@ -24,8 +24,9 @@ Event OnConfigInit()
 	If (GetIntValue(Self, "OnInitCounter") == 2)
 		ShowVersion()
 		SetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP, 2.0)
-		SetFloatValue(None, SS_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too.
+		SetFloatValue(None, SS_WAITTIMEAFTERANIM, 1.0) ;this is saved on None because it will be used by other mods too. It also has the SS prefix.
 		UnSetIntValue(Self, "OnInitCounter")
+		Debug.Notification("$SSER_INSTALLSSTRIPPERDONE_NOTIFY{" + SSer_Version + "}")
 	EndIf
 EndEvent
 
