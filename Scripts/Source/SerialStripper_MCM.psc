@@ -3,7 +3,7 @@ ScriptName SerialStripper_MCM Extends SKI_ConfigBase
 
 Import StorageUtil
 
-String Property SSer_Version = "v1.0.2" AutoReadOnly Hidden
+String Property SSer_Version = "v1.0.4" AutoReadOnly Hidden
 
 SerialStripFunctions Property SS Auto
 
