@@ -199,29 +199,18 @@ EndFunction
 
 Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
+	Bool bFullStrip
+	ObjectReference Target = Game.GetCurrentCrosshairRef()
+
 	If (KeyCode == GetIntValue(Self, SSER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-		If (HoldTime < GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has not been held down long enough
-			SendSerialStripStartEvent(Self, False)
+		If (HoldTime >= GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has been held down long enough
+			bFullStrip = True
+		EndIf
+
+		If (Target && Target.HasKeyword(Keyword.GetKeyword("ActorTypeNPC")))
+			SS.SendSerialStripStartEvent(Self, Target as Actor, bFullStrip)
 		Else
-			SendSerialStripStartEvent(Self, True)
+			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, bFullStrip)
 		EndIf
 	EndIf
 EndEvent
-
-Bool Function SendSerialStripStartEvent(Form akSender, Bool abFullStrip = False)
-	;/ beginValidation /;
-	If (!akSender)
-		Return False
-	EndIf
-	;/ endValidation /;
-
-	Int Handle = ModEvent.Create("SerialStripStart")
-	If (Handle)
-		ModEvent.PushForm(Handle, akSender)
-		ModEvent.PushBool(Handle, abFullStrip)
-		ModEvent.Send(Handle)
-		Return True
-	Else
-		Return False
-	EndIf
-EndFunction
