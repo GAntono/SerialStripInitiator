@@ -6,6 +6,7 @@ Import StorageUtil
 String Property SSer_Version = "v1.1.1-beta" AutoReadOnly Hidden
 
 SerialStripFunctions Property SS Auto
+SerialStripperFunctions Property SSer Auto
 
 String Property SSER_STRIPKEYONOFF = "APPS.SerialStripper.StripKeyOnOff" AutoReadOnly Hidden
 String Property SSER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
@@ -191,26 +192,8 @@ Function SerialStripperOn(Int abActivateSerialStripper)
 ;turns on serial stripping. Pass 1 to run on, 0 to turn off.
 
 	If (abActivateSerialStripper == 1) ;if serial stripping is set to activate
-		RegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;registers to listen for the strip key
+		SSer.RegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;registers to listen for the strip key
 	Else ;if serial stripping is set to deactivate
-		UnRegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;stops listening for the strip key
+		SSer.UnRegisterForKey(GetIntValue(Self, SSER_STRIPKEY)) ;stops listening for the strip key
 	EndIf
 EndFunction
-
-Event OnKeyUp(Int KeyCode, Float HoldTime)
-;when the key is released
-	Bool bFullStrip
-	ObjectReference Target = Game.GetCurrentCrosshairRef()
-
-	If (KeyCode == GetIntValue(Self, SSER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-		If (HoldTime >= GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has been held down long enough
-			bFullStrip = True
-		EndIf
-
-		If (Target && Target.HasKeyword(Keyword.GetKeyword("ActorTypeNPC")))
-			SS.SendSerialStripStartEvent(Self, Target as Actor, bFullStrip)
-		Else
-			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, bFullStrip)
-		EndIf
-	EndIf
-EndEvent
