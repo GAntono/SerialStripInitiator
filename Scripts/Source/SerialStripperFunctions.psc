@@ -13,7 +13,7 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 	ObjectReference Target = Game.GetCurrentCrosshairRef()
 
 	If (KeyCode == GetIntValue(Self, SSER_STRIPKEY) && !Utility.IsInMenuMode()) ;if the key that was released is the key for serial stripping and we are not in a menu
-		Debug.Trace("Key detected")
+		Debug.Trace("[SerialStripper] Key detected")
 		If (HoldTime >= GetFloatValue(Self, SSER_HOLDTIMEFORFULLSTRIP)) ;if the key has been held down long enough
 			bFullStrip = True
 		EndIf
@@ -21,7 +21,6 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 		If (Target && Target.HasKeyword(Keyword.GetKeyword("ActorTypeNPC")))
 			SS.SendSerialStripStartEvent(Self, Target as Actor, bFullStrip)
 		Else
-			Debug.Trace("Now sending SerialStripStart event")
 			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, bFullStrip)
 		EndIf
 	EndIf
