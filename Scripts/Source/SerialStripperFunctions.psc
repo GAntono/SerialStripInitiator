@@ -2,7 +2,7 @@ ScriptName SerialStripperFunctions Extends Quest
 
 Import StorageUtil
 
-String Property SSer_Version = "v1.1.1-beta" AutoReadOnly Hidden
+String Property SSer_Version = "v1.1.2" AutoReadOnly Hidden
 
 SerialStripFunctions Property SS Auto
 
@@ -25,9 +25,9 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 		EndIf
 
 		If (Target && Target.HasKeyword(Keyword.GetKeyword("ActorTypeNPC")))
-			SS.SendSerialStripStartEvent(Self, Target as Actor, bFullStrip)
+			SS.SendSerialStripStartEvent(Self, Target as Actor, abFullStrip = bFullStrip)
 		Else
-			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, bFullStrip)
+			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, abFullStrip = bFullStrip)
 		EndIf
 	EndIf
 EndEvent
