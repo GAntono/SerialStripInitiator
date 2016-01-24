@@ -2,10 +2,16 @@ ScriptName SerialStripperFunctions Extends Quest
 
 Import StorageUtil
 
+String Property SSer_Version = "v1.1.2" AutoReadOnly Hidden
+
 SerialStripFunctions Property SS Auto
 
 String Property SSER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidden
 String Property SSER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
+
+Function ShowVersion()
+	Debug.Trace("[SerialStripper] " + SSer_Version)
+EndFunction
 
 Event OnKeyUp(Int KeyCode, Float HoldTime)
 ;when the key is released
@@ -19,9 +25,9 @@ Event OnKeyUp(Int KeyCode, Float HoldTime)
 		EndIf
 
 		If (Target && Target.HasKeyword(Keyword.GetKeyword("ActorTypeNPC")))
-			SS.SendSerialStripStartEvent(Self, Target as Actor, bFullStrip)
+			SS.SendSerialStripStartEvent(Self, Target as Actor, abFullStrip = bFullStrip)
 		Else
-			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, bFullStrip)
+			SS.SendSerialStripStartEvent(Self, SS.PlayerRef, abFullStrip = bFullStrip)
 		EndIf
 	EndIf
 EndEvent
