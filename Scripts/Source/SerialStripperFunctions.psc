@@ -2,7 +2,7 @@ ScriptName SerialStripperFunctions Extends Quest
 
 Import StorageUtil
 
-; String Property SSer_Version = "v1.1.4" AutoReadOnly Hidden (Switched to string directly inside ShowVersion())
+; String Property SSer_Version = "v1.1.4(1)" AutoReadOnly Hidden (Switched to string directly inside ShowVersion())
 
 SerialStripFunctions Property SS Auto
 
@@ -10,7 +10,7 @@ String Property SSER_STRIPKEY = "APPS.SerialStripper.StripKey" AutoReadOnly Hidd
 String Property SSER_HOLDTIMEFORFULLSTRIP = "APPS.SerialStripper.HoldTimeForFullStrip" AutoReadOnly Hidden
 
 Function ShowVersion()
-	Debug.Trace("[SerialStripper] v1.1.4")
+	Debug.Trace("[SerialStripper] v1.1.4(1)")
 EndFunction
 
 Event OnKeyUp(Int KeyCode, Float HoldTime)
